@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm
+        http://xmlns.jcp.org/xml/ns/persistence/orm_2_2.xsd"
+	version="2.2">
+	<entity class="com.vortexbird.facturacion.domain.Company">
+		<named-native-query
+			name="Company.findCompanyByStatus"
+			result-set-mapping="findCompanyByStatus">
+			<query>
+			<![CDATA[
+				select
+					comp.comp_id compId,
+					comp.nit nit,
+					comp.name "name",
+					comp.bank bank,
+					comp.payment_deadline paymentDeadline
+				from company comp 
+					where ((:pStatus <> '-1' and upper(comp.status) like '%' || upper(:pStatus) || '%') or (:pStatus = '-1'))
+				ORDER BY comp."name" ASC
+			]]>
+			</query>
+		</named-native-query>
+		<named-native-query
+			name="Company.findCompanyFilter"
+			result-set-mapping="findCompanyFilter">
+			<query>
+			<![CDATA[
+				select 
+					comp.comp_id compId,
+					comp.nit nit,
+					comp.name "name",
+					comp.bank bank,
+					comp.payment_deadline paymentDeadline,
+					comp.creation_date creationDate,
+					comp.creation_user creationUser,
+					comp.status status
+				from company comp 
+					where ((:pCompId <> -1 and comp.comp_id = :pCompId) or (:pCompId = -1))
+					and ((:pNit <> -1 and comp.nit  = :pNit) or (:pNit = -1))
+					and ((:pName <> '-1' and upper(comp."name") like '%' || upper(:pName) || '%') or (:pName = '-1'))
+				ORDER BY comp."name" ASC
+			]]>
+			</query>
+		</named-native-query>
+		<named-native-query name="Company.findByFilters"
+			result-set-mapping="findByFilters">
+			<query>
+			<![CDATA[
+				select 
+					comp.comp_id compId,
+					comp.nit nit,
+					comp.name "name",
+					comp.bank bank,
+					comp.payment_deadline paymentDeadline
+				from company comp 
+					where ((:pCompId <> -1 and comp.comp_id = :pCompId) or (:pCompId = -1))
+					and ((:pNit <> -1 and comp.nit = :pNit) or (:pNit = -1))
+					and ((:pName <> '-1' and upper(comp."name") like '%' || upper(:pName) || '%') or (:pName = '-1'))
+				ORDER BY comp."name" ASC
+			]]>
+			</query>
+		</named-native-query>
+		<named-native-query
+			name="Company.findByFilters.count"
+			result-set-mapping="findByFiltersCount">
+			<query>
+			<![CDATA[
+				select count(subq.*) as total from (
+					select 
+					comp.comp_id compId,
+					comp.nit nit,
+					comp.name "name",
+					comp.bank bank,
+					comp.payment_deadline paymentDeadline
+				from company comp 
+					where ((:pCompId <> -1 and comp.comp_id = :pCompId) or (:pCompId = -1))
+					and ((:pNit <> -1 and comp.nit = :pNit) or (:pNit = -1))
+					and ((:pName <> '-1' and upper(comp."name") like '%' || upper(:pName) || '%') or (:pName = '-1'))
+				) as subq
+			]]>
+			</query>
+		</named-native-query>
+	</entity>
+	<entity class="com.vortexbird.facturacion.domain.ComercialLine">
+		<named-native-query
+			name="ComercialLine.findComercialLineByStatus"
+			result-set-mapping="findComercialLineByStatus">
+			<query>
+			<![CDATA[
+				select
+					coli.coli_id coliId,
+					coli.name "name"
+				from comercial_line coli
+					where ((:pStatus <> '-1' and upper(coli.status) like '%' || upper(:pStatus) || '%') or (:pStatus = '-1'))
+				ORDER BY coli."name" ASC
+			]]>
+			</query>
+		</named-native-query>
+		<named-native-query
+			name="ComercialLine.findComercialLineFilter"
+			result-set-mapping="findComercialLineFilter">
+			<query>
+			<![CDATA[
+				select 
+					coli.coli_id coliId,
+					coli."name" "name",
+					coli.creation_date creationDate,
+					coli.modification_user creationUser,
+					coli.status status
+				from
+					comercial_line coli
+				where
+					((:pColiId <> -1
+						and coli.coli_id = :pColiId)
+					or (:pColiId = -1))
+					and ((:pName <> '-1'
+						and upper(coli."name") like '%' || upper(:pName) || '%')
+						or (:pName = '-1'))
+				order by
+					coli."name" asc
+			]]>
+			</query>
+		</named-native-query>
+	</entity>
+</entity-mappings>
